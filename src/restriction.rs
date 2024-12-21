@@ -23,6 +23,17 @@ pub struct Restriction {
 }
 
 impl Restriction {
+    pub fn is_enum(&self) -> bool {
+        for c in self.content.iter() {
+            match c {
+                RestrictionContent::Enumeration(_) => { return true; },
+                _ => {}
+            }
+        }
+
+        false
+    }
+    
     pub fn read(element: &mut Element) -> Self {
         let mut r = Restriction::default();
 

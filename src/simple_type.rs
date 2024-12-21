@@ -10,6 +10,9 @@ pub struct SimpleType {
     /// The name of the type as found inside the xsd definition.
     pub name: String,
 
+    /// True, if it turns out, that this type must be an enumeration.
+    pub is_enum : bool,
+
     /// Annotations, usually documentation
     pub annotations: Vec<Annotation>,
     pub restriction: Option<Restriction>,
@@ -30,7 +33,9 @@ impl SimpleType {
         }
 
         while let Some(mut annotation) = element.take_child("restriction") {
-            r.restriction = Some(Restriction::read(&mut annotation));
+            let res = Restriction::read(&mut annotation);
+            r.is_enum = res.is_enum();
+            r.restriction = Some(res);
         }
 
         while let Some(mut union) = element.take_child("union") {
@@ -68,6 +73,7 @@ mod tests {
         assert_eq!(item.simple_types.len(), 1);
         assert_eq!(item.simple_types[0].annotations.len(), 1);
         assert_eq!(item.simple_types[0].name, "above-below".to_string());
+        assert!(item.simple_types[0].is_enum);
 
         let restriction = item.simple_types[0].restriction.clone().unwrap();
         assert_eq!(restriction.base, "xs:token".to_string());
@@ -103,6 +109,7 @@ mod tests {
         assert_eq!(item.simple_types.len(), 1);
         assert_eq!(item.simple_types[0].annotations.len(), 1);
         assert_eq!(item.simple_types[0].name, "midi-16384".to_string());
+        assert!(!item.simple_types[0].is_enum);
 
         let restriction = item.simple_types[0].restriction.clone().unwrap();
         assert_eq!(restriction.base, "xs:positiveInteger".to_string());
