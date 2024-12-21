@@ -6,19 +6,17 @@ pub enum AttributeMeta {
     Use(String),
     Fixed(String),
     Default(String),
-
 }
 
 #[derive(Debug, PartialEq, PartialOrd, Clone, Default)]
 pub struct Attribute {
-    pub name : Option<String>,
-    pub r#type : Option<String>,
-    pub additional_attributes : Vec<AttributeMeta>,
+    pub name: Option<String>,
+    pub r#type: Option<String>,
+    pub additional_attributes: Vec<AttributeMeta>,
 }
 
-
 impl Attribute {
-    pub fn read(element : &mut Element) -> Self {
+    pub fn read(element: &mut Element) -> Self {
         let mut r = Attribute::default();
         if element.attributes.contains_key("name") {
             r.name = Some(element.attributes["name"].clone());
@@ -29,19 +27,24 @@ impl Attribute {
         }
 
         if element.attributes.contains_key("ref") {
-            r.additional_attributes.push(AttributeMeta::Reference(element.attributes["ref"].clone()));
+            r.additional_attributes
+                .push(AttributeMeta::Reference(element.attributes["ref"].clone()));
         }
 
         if element.attributes.contains_key("use") {
-            r.additional_attributes.push(AttributeMeta::Use(element.attributes["use"].clone()));
+            r.additional_attributes
+                .push(AttributeMeta::Use(element.attributes["use"].clone()));
         }
 
         if element.attributes.contains_key("fixed") {
-            r.additional_attributes.push(AttributeMeta::Fixed(element.attributes["fixed"].clone()));
+            r.additional_attributes
+                .push(AttributeMeta::Fixed(element.attributes["fixed"].clone()));
         }
 
         if element.attributes.contains_key("default") {
-            r.additional_attributes.push(AttributeMeta::Default(element.attributes["default"].clone()));
+            r.additional_attributes.push(AttributeMeta::Default(
+                element.attributes["default"].clone(),
+            ));
         }
 
         r
@@ -50,8 +53,8 @@ impl Attribute {
 
 #[cfg(test)]
 mod tests {
-    use xmltree::Element;
     use crate::{attribute::AttributeMeta, schema::Schema};
+    use xmltree::Element;
 
     #[test]
     fn annotation() {
@@ -81,31 +84,60 @@ mod tests {
 
         let att_1 = item.attribute_groups[0].attributes[0].clone();
         assert_eq!(att_1.additional_attributes.len(), 2);
-        assert_eq!(att_1.additional_attributes[0], AttributeMeta::Reference("xlink:href".to_string()));
-        assert_eq!(att_1.additional_attributes[1], AttributeMeta::Use("required".to_string()));
+        assert_eq!(
+            att_1.additional_attributes[0],
+            AttributeMeta::Reference("xlink:href".to_string())
+        );
+        assert_eq!(
+            att_1.additional_attributes[1],
+            AttributeMeta::Use("required".to_string())
+        );
 
         let att_2 = item.attribute_groups[0].attributes[1].clone();
         assert_eq!(att_2.additional_attributes.len(), 2);
-        assert_eq!(att_2.additional_attributes[0], AttributeMeta::Reference("xlink:type".to_string()));
-        assert_eq!(att_2.additional_attributes[1], AttributeMeta::Fixed("simple".to_string()));
+        assert_eq!(
+            att_2.additional_attributes[0],
+            AttributeMeta::Reference("xlink:type".to_string())
+        );
+        assert_eq!(
+            att_2.additional_attributes[1],
+            AttributeMeta::Fixed("simple".to_string())
+        );
 
         let att_3 = item.attribute_groups[0].attributes[2].clone();
         assert_eq!(att_3.additional_attributes.len(), 1);
-        assert_eq!(att_3.additional_attributes[0], AttributeMeta::Reference("xlink:role".to_string()));
+        assert_eq!(
+            att_3.additional_attributes[0],
+            AttributeMeta::Reference("xlink:role".to_string())
+        );
 
         let att_4 = item.attribute_groups[0].attributes[3].clone();
         assert_eq!(att_4.additional_attributes.len(), 1);
-        assert_eq!(att_4.additional_attributes[0], AttributeMeta::Reference("xlink:title".to_string()));
+        assert_eq!(
+            att_4.additional_attributes[0],
+            AttributeMeta::Reference("xlink:title".to_string())
+        );
 
         let att_5 = item.attribute_groups[0].attributes[4].clone();
         assert_eq!(att_5.additional_attributes.len(), 2);
-        assert_eq!(att_5.additional_attributes[0], AttributeMeta::Reference("xlink:show".to_string()));
-        assert_eq!(att_5.additional_attributes[1], AttributeMeta::Default("replace".to_string()));
+        assert_eq!(
+            att_5.additional_attributes[0],
+            AttributeMeta::Reference("xlink:show".to_string())
+        );
+        assert_eq!(
+            att_5.additional_attributes[1],
+            AttributeMeta::Default("replace".to_string())
+        );
 
         let att_6 = item.attribute_groups[0].attributes[5].clone();
         assert_eq!(att_6.additional_attributes.len(), 2);
-        assert_eq!(att_6.additional_attributes[0], AttributeMeta::Reference("xlink:actuate".to_string()));
-        assert_eq!(att_6.additional_attributes[1], AttributeMeta::Default("onRequest".to_string()));
-       
+        assert_eq!(
+            att_6.additional_attributes[0],
+            AttributeMeta::Reference("xlink:actuate".to_string())
+        );
+        assert_eq!(
+            att_6.additional_attributes[1],
+            AttributeMeta::Default("onRequest".to_string())
+        );
     }
 }

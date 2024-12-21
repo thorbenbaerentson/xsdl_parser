@@ -1,18 +1,17 @@
 use crate::prelude::{Annotation, ComplexType, Occurs};
 
-
 #[derive(Debug, Default)]
 pub struct Element {
-    pub name : String,
-    pub r#type : String,
+    pub name: String,
+    pub r#type: String,
 
-    pub annotations : Vec<Annotation>,
-    pub occurs : Vec<Occurs>,
-    pub complex_types : Vec<ComplexType>,
+    pub annotations: Vec<Annotation>,
+    pub occurs: Vec<Occurs>,
+    pub complex_types: Vec<ComplexType>,
 }
 
 impl Element {
-    pub fn read(element : &mut xmltree::Element) -> Self {
+    pub fn read(element: &mut xmltree::Element) -> Self {
         let mut r = Element::default();
 
         r.occurs = Occurs::read(element);

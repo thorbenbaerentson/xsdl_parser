@@ -1,22 +1,24 @@
 use xmltree::Element;
 
-use crate::{prelude::{Annotation, Restriction}, union::Union};
-
+use crate::{
+    prelude::{Annotation, Restriction},
+    union::Union,
+};
 
 #[derive(Debug, Default, Clone)]
 pub struct SimpleType {
     /// The name of the type as found inside the xsd definition.
-    pub name : String,
+    pub name: String,
 
     /// Annotations, usually documentation
-    pub annotations : Vec<Annotation>,
-    pub restriction : Option<Restriction>,
+    pub annotations: Vec<Annotation>,
+    pub restriction: Option<Restriction>,
 
-    pub union : Option<Union>,
+    pub union: Option<Union>,
 }
 
 impl SimpleType {
-    pub fn read(element : &mut Element) -> Self {
+    pub fn read(element: &mut Element) -> Self {
         let mut r = SimpleType::default();
 
         if element.attributes.contains_key("name") {
@@ -39,12 +41,10 @@ impl SimpleType {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
-    use xmltree::Element;
     use crate::{restriction::RestrictionContent, schema::Schema};
-    
+    use xmltree::Element;
 
     #[test]
     fn simple_type_1() {
@@ -71,8 +71,14 @@ mod tests {
 
         let restriction = item.simple_types[0].restriction.clone().unwrap();
         assert_eq!(restriction.base, "xs:token".to_string());
-        assert_eq!(restriction.content[0], RestrictionContent::Enumeration("above".to_string()));
-        assert_eq!(restriction.content[1], RestrictionContent::Enumeration("below".to_string()));
+        assert_eq!(
+            restriction.content[0],
+            RestrictionContent::Enumeration("above".to_string())
+        );
+        assert_eq!(
+            restriction.content[1],
+            RestrictionContent::Enumeration("below".to_string())
+        );
     }
 
     #[test]
@@ -101,7 +107,10 @@ mod tests {
         let restriction = item.simple_types[0].restriction.clone().unwrap();
         assert_eq!(restriction.base, "xs:positiveInteger".to_string());
         assert_eq!(restriction.content[0], RestrictionContent::MinInclusive(1));
-        assert_eq!(restriction.content[1], RestrictionContent::MaxInclusive(16384));
+        assert_eq!(
+            restriction.content[1],
+            RestrictionContent::MaxInclusive(16384)
+        );
     }
 
     #[test]
@@ -190,6 +199,14 @@ mod tests {
         let union = item.simple_types[0].union.clone().unwrap();
         assert_eq!(union.types.len(), 1);
         assert_eq!(union.types[0], "xs:decimal".to_string());
-        assert_eq!(union.simple_types[0].restriction.clone().unwrap().content.len(), 1);
+        assert_eq!(
+            union.simple_types[0]
+                .restriction
+                .clone()
+                .unwrap()
+                .content
+                .len(),
+            1
+        );
     }
 }

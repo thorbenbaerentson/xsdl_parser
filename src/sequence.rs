@@ -1,14 +1,13 @@
-
 use crate::{element::Element, group::Group};
 
 #[derive(Debug, Default)]
 pub struct Sequence {
-    pub elements : Vec<Element>,
-    pub groups : Vec<Group>,
+    pub elements: Vec<Element>,
+    pub groups: Vec<Group>,
 }
 
 impl Sequence {
-    pub fn read(element : &mut xmltree::Element) -> Self {
+    pub fn read(element: &mut xmltree::Element) -> Self {
         let mut r = Sequence::default();
 
         while let Some(mut element) = element.take_child("element") {
@@ -18,7 +17,7 @@ impl Sequence {
         while let Some(mut group) = element.take_child("group") {
             r.groups.push(Group::read(&mut group));
         }
-        
+
         r
     }
 }
@@ -83,7 +82,7 @@ mod tests {
         assert_eq!(type_1.annotations.len(), 1);
 
         assert_eq!(item.complex_types[0].sequences.len(), 1);
-        
+
         let seq = &item.complex_types[0].sequences[0];
         assert_eq!(seq.elements.len(), 4);
         assert_eq!(seq.groups[0].reference, "editorial".to_string());
@@ -103,12 +102,9 @@ mod tests {
         assert_eq!(seq.elements[2].name, "midi-bank".to_string());
         assert_eq!(seq.elements[2].r#type, "midi-16384".to_string());
 
-
         assert_eq!(seq.elements[3].annotations.len(), 1);
         assert_eq!(seq.elements[3].occurs.len(), 2);
         assert_eq!(seq.elements[3].name, "directive".to_string());
         assert_eq!(seq.elements[3].complex_types.len(), 1);
-
-
     }
 }

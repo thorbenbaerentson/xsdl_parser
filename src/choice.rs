@@ -1,46 +1,51 @@
-
-use crate::{element::Element, prelude::{Occurs, Sequence}};
+use crate::{
+    element::Element,
+    prelude::{Occurs, Sequence},
+};
 
 #[derive(Debug, Default)]
 pub enum ChoiceItems {
-	#[default]
-	None,
+    #[default]
+    None,
 
-	Element(Element),
-	Choice(Choice),
-	Sequence(Sequence),
+    Element(Element),
+    Choice(Choice),
+    Sequence(Sequence),
 }
 
 #[derive(Debug, Default)]
 pub struct Choice {
-    pub occurs : Vec<Occurs>,
-    pub elements : Vec<ChoiceItems>,
+    pub occurs: Vec<Occurs>,
+    pub elements: Vec<ChoiceItems>,
 }
 
 impl Choice {
-    pub fn read(element : &mut xmltree::Element) -> Self {
+    pub fn read(element: &mut xmltree::Element) -> Self {
         let mut r = Choice::default();
 
         r.occurs = Occurs::read(element);
 
-		loop {
-			if let Some(mut element) = element.take_child("element") {
-				r.elements.push(ChoiceItems::Element(Element::read(&mut element)));
-				continue;
-			}
-	
-			if let Some(mut choice) = element.take_child("choice") {
-				r.elements.push(ChoiceItems::Choice(Choice::read(&mut choice)));
-				continue;
-			}
+        loop {
+            if let Some(mut element) = element.take_child("element") {
+                r.elements
+                    .push(ChoiceItems::Element(Element::read(&mut element)));
+                continue;
+            }
 
-			if let Some(mut sequence) = element.take_child("sequence") {
-				r.elements.push(ChoiceItems::Sequence(Sequence::read(&mut sequence)));
-				continue;
-			}
+            if let Some(mut choice) = element.take_child("choice") {
+                r.elements
+                    .push(ChoiceItems::Choice(Choice::read(&mut choice)));
+                continue;
+            }
 
-			break;
-		}
+            if let Some(mut sequence) = element.take_child("sequence") {
+                r.elements
+                    .push(ChoiceItems::Sequence(Sequence::read(&mut sequence)));
+                continue;
+            }
+
+            break;
+        }
 
         r
     }
@@ -104,18 +109,26 @@ mod tests {
         let type_1 = &item.complex_types[0];
         assert_eq!(type_1.annotations.len(), 1);
         assert_eq!(type_1.attribute_groups.len(), 5);
-        
+
         assert_eq!(type_1.choices.len(), 1);
-        assert_eq!(type_1.choices[0].occurs[0], Occurs::MinOccurs("0".to_string()));
-        assert_eq!(type_1.choices[0].occurs[1], Occurs::MaxOccurs("unbounded".to_string()));
+        assert_eq!(
+            type_1.choices[0].occurs[0],
+            Occurs::MinOccurs("0".to_string())
+        );
+        assert_eq!(
+            type_1.choices[0].occurs[1],
+            Occurs::MaxOccurs("unbounded".to_string())
+        );
 
         assert_eq!(type_1.choices[0].elements.len(), 27);
-		match &type_1.choices[0].elements[4] {
-			crate::choice::ChoiceItems::Element(element) => {
-				assert_eq!(element.name, "ppppp".to_string());
-				assert_eq!(element.r#type, "empty".to_string());
-			},
-			_ => { panic!("Expected choice"); }
-		}
+        match &type_1.choices[0].elements[4] {
+            crate::choice::ChoiceItems::Element(element) => {
+                assert_eq!(element.name, "ppppp".to_string());
+                assert_eq!(element.r#type, "empty".to_string());
+            }
+            _ => {
+                panic!("Expected choice");
+            }
+        }
     }
 }

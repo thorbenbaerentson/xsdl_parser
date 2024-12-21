@@ -1,16 +1,16 @@
-use xmltree::Element;
 use crate::prelude::{Attribute, AttributeGroup};
+use xmltree::Element;
 
 #[derive(Debug, Default)]
 pub struct Extension {
-    pub base : String,
+    pub base: String,
 
-    pub attributes : Vec<Attribute>,
-    pub attribute_groups : Vec<AttributeGroup>,
+    pub attributes: Vec<Attribute>,
+    pub attribute_groups: Vec<AttributeGroup>,
 }
 
 impl Extension {
-    pub fn read(element : &mut Element) -> Self {
+    pub fn read(element: &mut Element) -> Self {
         let mut r = Extension::default();
 
         if element.attributes.contains_key("base") {
@@ -22,7 +22,8 @@ impl Extension {
         }
 
         while let Some(mut attribute_group) = element.take_child("attributeGroup") {
-            r.attribute_groups.push(AttributeGroup::read(&mut attribute_group));
+            r.attribute_groups
+                .push(AttributeGroup::read(&mut attribute_group));
         }
 
         r

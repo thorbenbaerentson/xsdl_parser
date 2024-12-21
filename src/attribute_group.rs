@@ -4,15 +4,15 @@ use crate::prelude::{Annotation, Attribute};
 
 #[derive(Debug, Clone, Default)]
 pub struct AttributeGroup {
-    pub name : String,
-    pub reference : Option<String>,
-    pub annotations : Vec<Annotation>,
-    pub attributes : Vec<Attribute>,
-    pub attribute_groups : Vec<AttributeGroup>,
+    pub name: String,
+    pub reference: Option<String>,
+    pub annotations: Vec<Annotation>,
+    pub attributes: Vec<Attribute>,
+    pub attribute_groups: Vec<AttributeGroup>,
 }
 
 impl AttributeGroup {
-    pub fn read(element : &mut Element) -> Self {
+    pub fn read(element: &mut Element) -> Self {
         let mut r = AttributeGroup::default();
 
         if element.attributes.contains_key("name") {
@@ -38,8 +38,8 @@ impl AttributeGroup {
 
 #[cfg(test)]
 mod tests {
-    use xmltree::Element;
     use crate::schema::Schema;
+    use xmltree::Element;
 
     #[test]
     fn annotation() {

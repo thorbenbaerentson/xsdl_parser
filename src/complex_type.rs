@@ -1,22 +1,26 @@
+use crate::{
+    choice::Choice,
+    group::Group,
+    prelude::{Annotation, Attribute, AttributeGroup, Sequence, SimpleContent},
+};
 use xmltree::Element;
-use crate::{choice::Choice, group::Group, prelude::{Annotation, Attribute, AttributeGroup, Sequence, SimpleContent}};
 
 #[derive(Debug, Default)]
 pub struct ComplexType {
-    pub name : String,
+    pub name: String,
 
-    pub annotations : Vec<Annotation>,
-    pub attributes : Vec<Attribute>,
-    pub attribute_groups : Vec<AttributeGroup>,
-    pub simple_content : Vec<SimpleContent>,
-    pub choices : Vec<Choice>,
-    pub sequences : Vec<Sequence>,
+    pub annotations: Vec<Annotation>,
+    pub attributes: Vec<Attribute>,
+    pub attribute_groups: Vec<AttributeGroup>,
+    pub simple_content: Vec<SimpleContent>,
+    pub choices: Vec<Choice>,
+    pub sequences: Vec<Sequence>,
 
-    pub groups : Vec<Group>,
+    pub groups: Vec<Group>,
 }
 
 impl ComplexType {
-    pub fn read(element : &mut Element) -> Self {
+    pub fn read(element: &mut Element) -> Self {
         let mut r = ComplexType::default();
 
         if element.attributes.contains_key("name") {
@@ -32,11 +36,13 @@ impl ComplexType {
         }
 
         while let Some(mut attribute_group) = element.take_child("attributeGroup") {
-            r.attribute_groups.push(AttributeGroup::read(&mut attribute_group));
+            r.attribute_groups
+                .push(AttributeGroup::read(&mut attribute_group));
         }
 
         while let Some(mut simple_content) = element.take_child("simpleContent") {
-            r.simple_content.push(SimpleContent::read(&mut simple_content));
+            r.simple_content
+                .push(SimpleContent::read(&mut simple_content));
         }
 
         while let Some(mut choice) = element.take_child("choice") {
@@ -57,8 +63,8 @@ impl ComplexType {
 
 #[cfg(test)]
 mod tests {
-    use xmltree::Element;
     use crate::{prelude::Occurs, schema::Schema};
+    use xmltree::Element;
 
     #[test]
     fn complext_type_1() {
@@ -97,6 +103,5 @@ mod tests {
         let grp_2 = type_1.groups[1].clone();
         assert_eq!(grp_2.reference, "staff".to_string());
         assert_eq!(grp_2.occurs[0], Occurs::MinOccurs("0".to_string()));
-
     }
 }

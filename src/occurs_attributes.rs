@@ -5,8 +5,8 @@ pub enum Occurs {
 }
 
 impl Occurs {
-    pub fn read(element : &mut xmltree::Element) -> Vec<Self> {
-        let mut r : Vec<Occurs> = Vec::new();
+    pub fn read(element: &mut xmltree::Element) -> Vec<Self> {
+        let mut r: Vec<Occurs> = Vec::new();
 
         if element.attributes.contains_key("minOccurs") {
             r.push(Self::MinOccurs(element.attributes["minOccurs"].to_string()));

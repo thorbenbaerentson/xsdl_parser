@@ -1,18 +1,18 @@
-use xmltree::Element;
 use crate::prelude::{Annotation, Attribute, AttributeGroup, Extension};
+use xmltree::Element;
 
 #[derive(Debug, Default)]
 pub struct SimpleContent {
-    pub base : String,
+    pub base: String,
 
-    pub annotations : Vec<Annotation>,
-    pub attributes : Vec<Attribute>,
-    pub attribute_groups : Vec<AttributeGroup>,
-    pub extensions : Vec<Extension>,
+    pub annotations: Vec<Annotation>,
+    pub attributes: Vec<Attribute>,
+    pub attribute_groups: Vec<AttributeGroup>,
+    pub extensions: Vec<Extension>,
 }
 
 impl SimpleContent {
-    pub fn read(element : &mut Element) -> Self {
+    pub fn read(element: &mut Element) -> Self {
         let mut r = SimpleContent::default();
 
         if element.attributes.contains_key("base") {
@@ -28,7 +28,8 @@ impl SimpleContent {
         }
 
         while let Some(mut attribute_group) = element.take_child("attributeGroup") {
-            r.attribute_groups.push(AttributeGroup::read(&mut attribute_group));
+            r.attribute_groups
+                .push(AttributeGroup::read(&mut attribute_group));
         }
 
         while let Some(mut extension) = element.take_child("extension") {
@@ -41,8 +42,8 @@ impl SimpleContent {
 
 #[cfg(test)]
 mod tests {
-    use xmltree::Element;
     use crate::schema::Schema;
+    use xmltree::Element;
 
     #[test]
     fn simple_content_1() {
@@ -70,10 +71,16 @@ mod tests {
         assert_eq!(type_1.annotations.len(), 1);
         assert_eq!(type_1.simple_content.len(), 1);
         assert_eq!(type_1.simple_content[0].extensions.len(), 1);
-        assert_eq!(type_1.simple_content[0].extensions[0].base, "accidental-value".to_string());
-        assert_eq!(type_1.simple_content[0].extensions[0].attribute_groups.len(), 1);
+        assert_eq!(
+            type_1.simple_content[0].extensions[0].base,
+            "accidental-value".to_string()
+        );
+        assert_eq!(
+            type_1.simple_content[0].extensions[0]
+                .attribute_groups
+                .len(),
+            1
+        );
         assert_eq!(type_1.simple_content[0].extensions[0].attributes.len(), 1);
-
-
     }
 }

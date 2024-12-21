@@ -12,19 +12,18 @@ pub enum RestrictionContent {
     MaxInclusive(i32),
 
     /// A regex pattern
-    Pattern(String)
+    Pattern(String),
 }
-
 
 #[derive(Debug, Default, Clone)]
 pub struct Restriction {
-    pub base : String,
+    pub base: String,
 
-    pub content : Vec<RestrictionContent>,
+    pub content: Vec<RestrictionContent>,
 }
 
 impl Restriction {
-    pub fn read(element : &mut Element) -> Self {
+    pub fn read(element: &mut Element) -> Self {
         let mut r = Restriction::default();
 
         if element.attributes.contains_key("base") {
@@ -44,9 +43,11 @@ impl Restriction {
             if min.attributes.contains_key("value") {
                 let option = min.attributes["value"].clone();
                 match option.parse::<i32>() {
-                    Ok(v) => { r.content.push(RestrictionContent::MinInclusive(v)); },
-                    Err(_) => { },
-                } ;
+                    Ok(v) => {
+                        r.content.push(RestrictionContent::MinInclusive(v));
+                    }
+                    Err(_) => {}
+                };
             }
         }
 
@@ -55,9 +56,11 @@ impl Restriction {
             if max.attributes.contains_key("value") {
                 let option = max.attributes["value"].clone();
                 match option.parse::<i32>() {
-                    Ok(v) => { r.content.push(RestrictionContent::MaxInclusive(v)); },
-                    Err(_) => { },
-                } ;
+                    Ok(v) => {
+                        r.content.push(RestrictionContent::MaxInclusive(v));
+                    }
+                    Err(_) => {}
+                };
             }
         }
 
