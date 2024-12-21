@@ -26,6 +26,7 @@ pub mod prelude {
     pub use crate::import::Import;
     pub use crate::occurs_attributes::Occurs;
     pub use crate::restriction::Restriction;
+    pub use crate::restriction::RestrictionContent;
     pub use crate::schema::Schema;
     pub use crate::sequence::Sequence;
     pub use crate::simple_content::SimpleContent;

@@ -1,0 +1,5 @@
+# <---NAME--->
+<---DOCS--->
+
+### Hint
+This file has been automatically generated using [xsdl_code_gen](https://github.com/thorbenbaerentson/xsdl_code_gen).
