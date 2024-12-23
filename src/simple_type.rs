@@ -10,7 +10,7 @@ pub struct SimpleType {
     /// The name of the type as found inside the xsd definition.
     pub name: String,
 
-    /// True, if it turns out, that this type must be an enumeration.
+    /// True, if it turns out, that this type should be an enumeration.
     pub is_enum : bool,
 
     /// Annotations, usually documentation

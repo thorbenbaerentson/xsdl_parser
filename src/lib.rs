@@ -18,6 +18,7 @@ mod union;
 pub mod prelude {
     pub use crate::attribute::Attribute;
     pub use crate::attribute_group::AttributeGroup;
+    pub use crate::attribute::AttributeMeta;
     pub use crate::choice::Choice;
     pub use crate::complex_type::ComplexType;
     pub use crate::element::Element;
