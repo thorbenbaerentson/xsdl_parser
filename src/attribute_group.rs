@@ -32,6 +32,10 @@ impl AttributeGroup {
             r.attributes.push(Attribute::read(&mut attribute));
         }
 
+        while let Some(mut grp) = element.take_child("attributeGroup") {
+            r.attribute_groups.push(AttributeGroup::read(&mut grp));
+        }
+
         r
     }
 }
@@ -61,9 +65,38 @@ mod tests {
         assert_eq!(item.attribute_groups.len(), 1);
         assert_eq!(item.attribute_groups[0].annotations.len(), 1);
         assert_eq!(item.attribute_groups[0].attributes.len(), 2);
-        // match &item.annotations[0].content[0] {
-        //     AnnotationContent::Documentation(s) => { assert!(s.starts_with("The MusicXML 4.1 DTD has no namespace")); },
-        //     _ => { panic!("Wrong annotation type!"); }
-        // }
+    }
+    #[test]
+    fn attribute_group() {
+        let xml = r#"
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:attributeGroup name="text-formatting">
+		<xs:annotation>
+			<xs:documentation>The text-formatting attribute group collects the common formatting attributes for text elements. Default values may differ across the elements that use this group.</xs:documentation>
+		</xs:annotation>
+		<xs:attributeGroup ref="justify"/>
+		<xs:attributeGroup ref="print-style-align"/>
+		<xs:attributeGroup ref="text-decoration"/>
+		<xs:attributeGroup ref="text-rotation"/>
+		<xs:attributeGroup ref="letter-spacing"/>
+		<xs:attributeGroup ref="line-height"/>
+		<xs:attribute ref="xml:lang"/>
+		<xs:attribute ref="xml:space"/>
+		<xs:attributeGroup ref="text-direction"/>
+		<xs:attributeGroup ref="enclosure"/>
+        <xs:attribute name="underline" type="number-of-lines"/>
+		<xs:attribute name="overline" type="number-of-lines"/>
+		<xs:attribute name="line-through" type="number-of-lines"/>
+	</xs:attributeGroup>
+</xs:schema>
+"#;
+
+        let mut element = Element::parse(xml.as_bytes()).unwrap();
+        let item = Schema::read(&mut element);
+
+        assert_eq!(item.attribute_groups.len(), 1);
+        assert_eq!(item.attribute_groups[0].annotations.len(), 1);
+        assert_eq!(item.attribute_groups[0].attributes.len(), 5);
+        assert_eq!(item.attribute_groups[0].attribute_groups.len(), 8);
     }
 }
